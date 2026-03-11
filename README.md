@@ -1,5 +1,4 @@
-# EX-NO14-HASH-ALGORITHM
-
+# EX-NO:14-HASH-ALGORITHM
 ## AIM:
 To implement HASH ALGORITHM
 
@@ -27,9 +26,51 @@ To implement HASH ALGORITHM
 
 
 ## Program:
+```c
+#include <stdio.h>
+#include <string.h>
 
+void computeSimpleHash(const char *message, unsigned char *hash) {
+    unsigned char temp = 0;
+
+    for (int i = 0; message[i] != '\0'; i++) {
+        temp = temp ^ message[i];  
+        temp += message[i];        
+    }
+    
+    *hash = temp;
+}
+
+int main() {
+    char message[256];     
+    unsigned char hash;    
+    char receivedHash[3];   
+
+    printf("Enter the message: ");
+    scanf("%s", message);
+
+    computeSimpleHash(message, &hash);
+
+    printf("Computed Hash (in hex): %02x\n", hash);
+
+    printf("Enter the received hash (in hex): ");
+    scanf("%s", receivedHash);
+
+    unsigned int receivedHashValue;
+    sscanf(receivedHash, "%02x", &receivedHashValue);
+
+    if (hash == receivedHashValue) {
+        printf("Hash verification successful. Message is unchanged.\n");
+    } else {
+        printf("Hash verification failed. Message has been altered.\n");
+    }
+
+    return 0;
+}
+```
 
 ## Output:
+![Screenshot 2024-11-14 191156](https://github.com/user-attachments/assets/b38a7baf-b44d-4d52-b8b5-b494d1669467)
 
 ## Result:
 The program is executed successfully.
