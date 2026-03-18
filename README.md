@@ -30,47 +30,53 @@ To implement HASH ALGORITHM
 #include <stdio.h>
 #include <string.h>
 
-void computeSimpleHash(const char *message, unsigned char *hash) {
-    unsigned char temp = 0;
+int main()
+{
+    char str[100];
+    int i, j, len;
+    unsigned long hash = 5381; // initial value (like DJB2)
 
-    for (int i = 0; message[i] != '\0'; i++) {
-        temp = temp ^ message[i];  
-        temp += message[i];        
+    printf("Enter message: ");
+    scanf("%s", str);
+    len = strlen(str);
+
+    // Step 1: Basic Hashing
+    for(i = 0; i < len; i++)
+    {
+        hash = ((hash << 5) + hash) + str[i]; // hash * 33 + char
     }
-    
-    *hash = temp;
-}
-
-int main() {
-    char message[256];     
-    unsigned char hash;    
-    char receivedHash[3];   
-
-    printf("Enter the message: ");
-    scanf("%s", message);
-
-    computeSimpleHash(message, &hash);
-
-    printf("Computed Hash (in hex): %02x\n", hash);
-
-    printf("Enter the received hash (in hex): ");
-    scanf("%s", receivedHash);
-
-    unsigned int receivedHashValue;
-    sscanf(receivedHash, "%02x", &receivedHashValue);
-
-    if (hash == receivedHashValue) {
-        printf("Hash verification successful. Message is unchanged.\n");
-    } else {
-        printf("Hash verification failed. Message has been altered.\n");
+    // Step 2: Extra Mixing
+    for(i = 0; i < len; i++)
+    {
+        hash = hash ^ (str[i] << (i % 8));
     }
+    // Step 3: Reduce size
+    hash = hash % 1000000;
+    printf("Hash Value: %lu\n", hash);
+
+    // Step 4: Simple Verification
+    unsigned long verify = 5381;
+    for(i = 0; i < len; i++)
+    {
+        verify = ((verify << 5) + verify) + str[i];
+    }
+    for(i = 0; i < len; i++)
+    {
+        verify = verify ^ (str[i] << (i % 8));
+    }
+    verify = verify % 1000000;
+
+    if(hash == verify)
+        printf("Hash Verified (Integrity Maintained)\n");
+    else
+        printf("Hash Mismatch (Data Changed)\n");
 
     return 0;
 }
 ```
 
 ## Output:
-![Screenshot 2024-11-14 191156](https://github.com/user-attachments/assets/b38a7baf-b44d-4d52-b8b5-b494d1669467)
+<img width="512" height="276" alt="image" src="https://github.com/user-attachments/assets/8786a265-1ed7-450a-b6ac-0665b0df1c40" />
 
 ## Result:
 The program is executed successfully.
